@@ -16,12 +16,7 @@ import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -203,6 +198,9 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        if (!isAdded()) {
+            return null;
+        }
         String selection = null;
         String[] selectionArgs = null;
         historyEmptyContainer.setVisibility(View.GONE);
@@ -210,15 +208,18 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         if (searchStr.length() != 0) {
             // FIXME: Find ways to not have to hard code column names
             searchStr = searchStr.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-            selection = "UPPER(history.title) LIKE UPPER(?) ESCAPE '\\'";
+            selection =  "UPPER(history.title) LIKE UPPER(?) ESCAPE '\\'";
             selectionArgs = new String[]{"%" + searchStr + "%"};
         }
+        return new CursorLoader(
+                getActivity(),
+                Uri.parse(HistoryEntry.DATABASE_TABLE.getBaseContentURI().toString() + "/" + PageImage.DATABASE_TABLE
 
-        Uri uri = Uri.parse(HistoryEntry.DATABASE_TABLE.getBaseContentURI().toString()
-                + "/" + PageImage.DATABASE_TABLE.getTableName());
-        String[] projection = null;
-        String order = "timestamp DESC";
-        return new CursorLoader(getContext(), uri, projection, selection, selectionArgs, order);
+                        .getTableName()),
+                null,
+                selection,
+                selectionArgs,
+                "timestamp DESC");
     }
 
     @Override
@@ -265,7 +266,7 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
             title.setText(entry.getTitle().getDisplayText());
             view.setTag(entry);
             ViewUtil.loadImageUrlInto((SimpleDraweeView) view.findViewById(R.id.page_list_item_image),
-                    cursor.getString(cursor.getColumnIndexOrThrow(PageImage.DATABASE_TABLE.getImageColumnName())));
+                    cursor.getString(HistoryEntryContentProvider.COL_INDEX_IMAGE));
 
             // Check the previous item, see if the times differ enough
             // If they do, display the section header.

@@ -58,6 +58,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <!--http://localhost:8888/mediawiki/index.php/Main_Page-->
+                <data android:host="localhost:8888" android:pathPrefix="/mediawiki/" android:scheme="http" />
                 <data android:host="*.wikipedia.org" android:pathPrefix="/wiki/" android:scheme="http" />
                 <data android:host="*.wikipedia.org" android:pathPrefix="/wiki/" android:scheme="https" />
             </intent-filter>

@@ -29,8 +29,6 @@ public class SettingsPreferenceLoader extends BasePreferenceLoader {
         updateLanguagePrefSummary();
 
         Preference languagePref = findPreference(R.string.preference_key_language);
-        Preference zeroWarnPref = findPreference(R.string.preference_key_zero_interstitial);
-
         languagePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -46,16 +44,6 @@ public class SettingsPreferenceLoader extends BasePreferenceLoader {
                     }
                 });
                 langPrefDialog.show();
-                return true;
-            }
-        });
-
-        zeroWarnPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue == Boolean.FALSE) {
-                    WikipediaApp.getInstance().getWikipediaZeroHandler().getZeroFunnel().logExtLinkAlways();
-                }
                 return true;
             }
         });

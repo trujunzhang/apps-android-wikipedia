@@ -1,75 +1,36 @@
 package org.wikipedia.zero;
 
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class ZeroConfig implements Parcelable {
-    @NonNull private String message = "";
+    @NonNull private String message;
     private int foreground;
     private int background;
     @Nullable private String exitTitle;
     @Nullable private String exitWarning;
     @Nullable private String partnerInfoText;
     @Nullable private String partnerInfoUrl;
-    @Nullable private String bannerUrl;
 
-    public static class Builder {
-        @NonNull private String message = "";
-        private int foreground;
-        private int background;
-        @Nullable private String exitTitle;
-        @Nullable private String exitWarning;
-        @Nullable private String partnerInfoText;
-        @Nullable private String partnerInfoUrl;
-        @Nullable private String bannerUrl;
-
-        public Builder(@NonNull String message, int foreground, int background) {
-            this.message = message;
-            this.foreground = foreground;
-            this.background = background;
-        }
-
-        public Builder exitTitle(String string) {
-            exitTitle = string;
-            return this;
-        }
-
-        public Builder exitWarning(String string) {
-            exitWarning = string;
-            return this;
-        }
-
-        public Builder partnerInfoText(String string) {
-            partnerInfoText = string;
-            return this;
-        }
-
-        public Builder partnerInfoUrl(String string) {
-            partnerInfoUrl = string;
-            return this;
-        }
-
-        public Builder bannerUrl(String string) {
-            bannerUrl = string;
-            return this;
-        }
-
-        public ZeroConfig build() {
-            return new ZeroConfig(this);
-        }
+    public ZeroConfig(@NonNull String message, @NonNull String foreground, @NonNull String background,
+                      @Nullable String exitTitle, @Nullable String exitWarning, @Nullable String partnerInfoText,
+                      @Nullable String partnerInfoUrl) {
+        this(message, Color.parseColor(foreground.toUpperCase()), Color.parseColor(background.toUpperCase()),
+                exitTitle, exitWarning, partnerInfoText, partnerInfoUrl);
     }
 
-    private ZeroConfig(Builder builder) {
-        message = builder.message;
-        background = builder.background;
-        foreground = builder.foreground;
-        exitTitle = builder.exitTitle;
-        exitWarning = builder.exitWarning;
-        partnerInfoText = builder.partnerInfoText;
-        partnerInfoUrl = builder.partnerInfoUrl;
-        bannerUrl = builder.bannerUrl;
+    public ZeroConfig(@NonNull String message, int foreground, int background, @Nullable String exitTitle,
+                      @Nullable String exitWarning, @Nullable String partnerInfoText, @Nullable String partnerInfoUrl) {
+        this.message = message;
+        this.foreground = foreground;
+        this.background = background;
+        this.exitTitle = exitTitle;
+        this.exitWarning = exitWarning;
+        this.partnerInfoText = partnerInfoText;
+        this.partnerInfoUrl = partnerInfoUrl;
     }
 
     @NonNull
@@ -101,13 +62,8 @@ public class ZeroConfig implements Parcelable {
     }
 
     @Nullable
-    public String getPartnerInfoUrl() {
+    public String partnerInfoUrl() {
         return partnerInfoUrl;
-    }
-
-    @Nullable
-    public String getBannerUrl() {
-        return bannerUrl;
     }
 
     @Override
@@ -120,7 +76,6 @@ public class ZeroConfig implements Parcelable {
                 + ", exitWarning='" + exitWarning + '\''
                 + ", partnerInfoText='" + partnerInfoText + '\''
                 + ", partnerInfoUrl='" + partnerInfoUrl + '\''
-                + ", bannerUrl='" + bannerUrl + '\''
                 + '}';
     }
 
@@ -153,10 +108,7 @@ public class ZeroConfig implements Parcelable {
         if (partnerInfoText != null ? !partnerInfoText.equals(that.partnerInfoText) : that.partnerInfoText != null) {
             return false;
         }
-        if (partnerInfoUrl != null ? !partnerInfoUrl.equals(that.partnerInfoUrl) : that.partnerInfoUrl != null) {
-            return false;
-        }
-        return !(bannerUrl != null ? !bannerUrl.equals(that.bannerUrl) : that.bannerUrl != null);
+        return !(partnerInfoUrl != null ? !partnerInfoUrl.equals(that.partnerInfoUrl) : that.partnerInfoUrl != null);
 
     }
 
@@ -169,7 +121,6 @@ public class ZeroConfig implements Parcelable {
         result = 31 * result + (exitWarning != null ? exitWarning.hashCode() : 0);
         result = 31 * result + (partnerInfoText != null ? partnerInfoText.hashCode() : 0);
         result = 31 * result + (partnerInfoUrl != null ? partnerInfoUrl.hashCode() : 0);
-        result = 31 * result + (bannerUrl != null ? bannerUrl.hashCode() : 0);
         return result;
     }
 
@@ -187,7 +138,6 @@ public class ZeroConfig implements Parcelable {
         out.writeString(this.exitWarning);
         out.writeString(this.partnerInfoText);
         out.writeString(this.partnerInfoUrl);
-        out.writeString(this.bannerUrl);
     }
 
     @NonNull
@@ -203,12 +153,7 @@ public class ZeroConfig implements Parcelable {
     };
 
     public ZeroConfig(Parcel in) {
-        new Builder(in.readString(), in.readInt(), in.readInt())
-                .exitTitle(in.readString())
-                .exitWarning(in.readString())
-                .partnerInfoText(in.readString())
-                .partnerInfoUrl(in.readString())
-                .bannerUrl(in.readString())
-        .build();
+        this(in.readString(), in.readInt(), in.readInt(), in.readString(), in.readString(),
+                in.readString(), in.readString());
     }
 }

@@ -61,9 +61,11 @@ public class PageLoadTest extends BasePageLoadTest {
         testPagesRtl();
     }
 
-    private void testPagesWithImages() throws Throwable {
-        List<String> pages = Arrays.asList("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn",
-                "Uranus", "Neptune", "Barack Obama", "Moon");
+    public void testPagesWithImages() throws Throwable {
+//        List<String> pages = Arrays.asList("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn",
+//                "Uranus", "Neptune", "Barack Obama", "Moon");
+
+        List<String> pages = Arrays.asList("Mercury");
         testPages(pages);
     }
 

@@ -3,11 +3,13 @@ package org.wikipedia.util;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,12 +17,9 @@ import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
 import org.wikipedia.page.PageTitle;
 import org.wikipedia.settings.Prefs;
-import org.wikipedia.zero.WikipediaZeroHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-
-import static org.wikipedia.zero.WikipediaZeroHandler.showZeroExitInterstitialDialog;
 
 public final class UriUtil {
 
@@ -65,8 +64,7 @@ public final class UriUtil {
      * @return A fully qualified, protocol specified URL
      */
     public static String resolveProtocolRelativeUrl(String url) {
-        return (url.startsWith("//") ? WikipediaApp.getInstance().getNetworkProtocol() + ":" + url
-                : url);
+        return (url.startsWith("//") ? WikipediaApp.getInstance().getNetworkProtocol() + ":" + url : url);
     }
 
     public static boolean isValidPageLink(Uri uri) {
@@ -75,26 +73,29 @@ public final class UriUtil {
     }
 
     public static void handleExternalLink(final Context context, final Uri uri) {
-        final WikipediaZeroHandler zeroHandler = WikipediaApp.getInstance()
-                .getWikipediaZeroHandler();
-
-        if (!zeroHandler.isZeroEnabled()) {
-            if (!StringUtil.emptyIfNull(zeroHandler.getXCarrier()).equals("")) {
-                // User is potentially zero-rated based on IP, but not on a whitelisted site
-                // (this is rare)
-                zeroHandler.getZeroFunnel().logExtLink();
+        if (WikipediaApp.getInstance().getWikipediaZeroHandler().isZeroEnabled()) {
+            if (Prefs.isShowZeroInterstitialEnabled()) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle(context.getString(R.string.zero_interstitial_title));
+                alert.setMessage(context.getString(R.string.zero_interstitial_leave_app));
+                alert.setPositiveButton(context.getString(R.string.zero_interstitial_continue), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        visitInExternalBrowser(context, uri);
+                    }
+                });
+                alert.setNegativeButton(context.getString(R.string.zero_interstitial_cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog ad = alert.create();
+                ad.show();
+            } else {
+                visitInExternalBrowser(context, uri);
             }
+        } else {
             visitInExternalBrowser(context, uri);
-            return;
         }
-
-        if (!Prefs.isShowZeroInterstitialEnabled()) {
-            visitInExternalBrowser(context, uri);
-            zeroHandler.getZeroFunnel().logExtLinkAuto();
-            return;
-        }
-
-        showZeroExitInterstitialDialog(context, uri);
     }
 
     public static void sendGeoIntent(@NonNull Activity activity,
@@ -113,8 +114,7 @@ public final class UriUtil {
         }
     }
 
-    public static String getUrlWithProvenance(Context context, PageTitle title,
-                                              @StringRes int provId) {
+    public static String getUrlWithProvenance(Context context, PageTitle title, @StringRes int provId) {
         return title.getCanonicalUri() + "?wprov=" + context.getString(provId);
     }
 

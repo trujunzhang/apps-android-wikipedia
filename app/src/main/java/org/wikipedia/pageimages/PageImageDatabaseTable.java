@@ -28,9 +28,9 @@ public class PageImageDatabaseTable extends DatabaseTable<PageImage> {
 
     @Override
     public PageImage fromCursor(Cursor c) {
-        Site site = new Site(getString(c, COL_SITE));
-        PageTitle title = new PageTitle(getString(c, COL_NAMESPACE), getString(c, COL_TITLE), site);
-        String imageName = getString(c, COL_IMAGE_NAME);
+        Site site = new Site(c.getString(c.getColumnIndex(COL_SITE)));
+        PageTitle title = new PageTitle(c.getString(c.getColumnIndex(COL_NAMESPACE)), c.getString(c.getColumnIndex(COL_TITLE)), site);
+        String imageName = c.getString(c.getColumnIndex(COL_IMAGE_NAME));
         return new PageImage(title, imageName);
     }
 
@@ -55,7 +55,7 @@ public class PageImageDatabaseTable extends DatabaseTable<PageImage> {
                     selection, new String[] {}, "");
             if (c.getCount() > 0) {
                 c.moveToFirst();
-                thumbnail = getString(c, COL_IMAGE_NAME);
+                thumbnail = c.getString(c.getColumnIndex("imageName"));
             }
         } catch (SQLiteException e) {
             // page title doesn't exist in database... no problem if it fails.
@@ -70,10 +70,6 @@ public class PageImageDatabaseTable extends DatabaseTable<PageImage> {
     @Override
     public String getTableName() {
         return "pageimages";
-    }
-
-    public String getImageColumnName() {
-        return COL_IMAGE_NAME;
     }
 
     @Override
@@ -117,8 +113,8 @@ public class PageImageDatabaseTable extends DatabaseTable<PageImage> {
     @Override
     protected void convertAllTitlesToUnderscores(SQLiteDatabase db) {
         Cursor cursor = db.query(getTableName(), null, null, null, null, null, null);
-        int idIndex = cursor.getColumnIndexOrThrow("_id");
-        int titleIndex = cursor.getColumnIndexOrThrow(COL_TITLE);
+        int idIndex = cursor.getColumnIndex("_id");
+        int titleIndex = cursor.getColumnIndex(COL_TITLE);
         ContentValues values = new ContentValues();
         while (cursor.moveToNext()) {
             String title = cursor.getString(titleIndex);

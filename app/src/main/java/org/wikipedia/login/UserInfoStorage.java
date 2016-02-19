@@ -1,7 +1,5 @@
 package org.wikipedia.login;
 
-import android.support.annotation.Nullable;
-
 import org.wikipedia.settings.Prefs;
 
 public class UserInfoStorage {
@@ -17,7 +15,6 @@ public class UserInfoStorage {
         Prefs.setLoginUserId(user.getUserID());
     }
 
-    @Nullable
     public User getUser() {
         if (currentUser == null) {
             if (Prefs.hasLoginUsername() && Prefs.hasLoginPassword()) {

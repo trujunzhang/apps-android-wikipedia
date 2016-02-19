@@ -40,6 +40,12 @@ public final class RbEndpointsCache {
         RbContentService.RbEndpoints webService;
         final String domain = site.getDomain();
         final WikipediaApp app = WikipediaApp.getInstance();
+        // https://test.wikipedia.org/api/rest_v1
+        // /page/summary/{title}
+        // https://test.wikipedia.org/api/rest_v1/page/summary/Ampersand & title
+        // https://test.wikipedia.org/api/rest_v1/mobile-sections/Ampersand & title
+        String endpoint = String.format(Locale.ROOT, Prefs.getRestbaseUriFormat(),
+                WikipediaApp.getInstance().getNetworkProtocol(), domain);
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(Prefs.getRetrofitLogLevel())
 
@@ -52,8 +58,7 @@ public final class RbEndpointsCache {
                     }
                 })
 
-                .setEndpoint(String.format(Locale.ROOT, Prefs.getRestbaseUriFormat(),
-                        WikipediaApp.getInstance().getNetworkProtocol(), domain))
+                .setEndpoint(endpoint)
 
                         // following is only needed for the hacky PageLead.Protection deserialization
                         // remove once our service handles this better (see T111131)

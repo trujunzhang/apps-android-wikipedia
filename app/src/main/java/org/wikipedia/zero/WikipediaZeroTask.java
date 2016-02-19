@@ -1,6 +1,5 @@
 package org.wikipedia.zero;
 
-import android.graphics.Color;
 import android.support.annotation.VisibleForTesting;
 
 import org.json.JSONObject;
@@ -8,6 +7,7 @@ import org.mediawiki.api.json.Api;
 import org.mediawiki.api.json.ApiResult;
 import org.mediawiki.api.json.RequestBuilder;
 import org.wikipedia.ApiTask;
+import org.wikipedia.WikipediaApp;
 
 public class WikipediaZeroTask extends ApiTask<ZeroConfig> {
     private String userAgent;
@@ -27,7 +27,8 @@ public class WikipediaZeroTask extends ApiTask<ZeroConfig> {
     public RequestBuilder buildRequest(Api api) {
         return api.action("zeroconfig")
                 .param("type", "message")
-                .param("agent", userAgent);
+                .param("agent", userAgent)
+                .param("uselang", WikipediaApp.getInstance().getAppOrSystemLanguageCode());
     }
 
     @Override
@@ -41,15 +42,8 @@ public class WikipediaZeroTask extends ApiTask<ZeroConfig> {
             String exitWarning = results.optString("exitWarning");
             String partnerInfoText = results.optString("partnerInfoText");
             String partnerInfoUrl = results.optString("partnerInfoUrl");
-            String bannerUrl = results.optString("bannerUrl");
-
-            return new ZeroConfig.Builder(message, Color.parseColor(foreground), Color.parseColor(background))
-                    .exitTitle(exitTitle)
-                    .exitWarning(exitWarning)
-                    .partnerInfoText(partnerInfoText)
-                    .partnerInfoUrl(partnerInfoUrl)
-                    .bannerUrl(bannerUrl)
-                    .build();
+            return new ZeroConfig(message, foreground, background, exitTitle, exitWarning,
+                    partnerInfoText, partnerInfoUrl);
         } catch (Exception e) {
             return null;
         }

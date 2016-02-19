@@ -140,6 +140,7 @@ public class Site implements Parcelable {
     }
 
     public static Site forLanguage(String language) {
+//        return new Site("http://localhost:8888/mediawiki", language);
         return new Site(languageToWikiSubdomain(language) + ".wikipedia.org", language);
     }
 

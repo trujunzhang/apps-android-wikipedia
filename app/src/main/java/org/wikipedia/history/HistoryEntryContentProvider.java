@@ -12,6 +12,9 @@ import org.wikipedia.pageimages.PageImage;
 public class HistoryEntryContentProvider extends SQLiteContentProvider {
     private static final int MATCH_WITH_PAGEIMAGES =  64;
 
+    /** column index of pageimages.imageName in the MATCH_WITH_PAGEIMAGES case */
+    public static final int COL_INDEX_IMAGE = 6;
+
     public HistoryEntryContentProvider() {
         super(HistoryEntry.DATABASE_TABLE);
     }
@@ -41,16 +44,19 @@ public class HistoryEntryContentProvider extends SQLiteContentProvider {
             case MATCH_WITH_PAGEIMAGES:
                 queryBuilder.setTables(
                         String.format("%1$s LEFT OUTER JOIN %2$s ON (%1$s.site = %2$s.site and %1$s.title = %2$s.title)",
-                                HistoryEntry.DATABASE_TABLE.getTableName(), PageImage.DATABASE_TABLE.getTableName())
+                                HistoryEntry.DATABASE_TABLE.getTableName(), PageImage.DATABASE_TABLE
+
+                                .getTableName()
+                                )
                 );
-                String[] actualProjection = new String[]{
+                String[] actualProjection = new String[] {
                         "history._id",
                         "history.site",
                         "history.title",
                         "history.namespace",
                         "history.timestamp",
                         "history.source",
-                        PageImage.DATABASE_TABLE.getTableName() + "." + PageImage.DATABASE_TABLE.getImageColumnName()
+                        "pageimages.imageName"
                 };
                 cursor = queryBuilder.query(db, actualProjection, selection, selectionArgs, null, null, sortOrder);
                 break;

@@ -52,6 +52,7 @@ public class RbContentService implements PageService {
     public void pageLead(String title, final int leadImageThumbWidth, boolean noImages,
                          final PageLead.Callback cb) {
         // https://en.wikipedia.org/api/rest_v1/page/mobile-sections-lead/Main_Page
+        // https://test.wikipedia.org/api/rest_v1/page/mobile-sections-remaining/Ampersand_%26_title
         // TODO: djzhang(fetching json data)
         webService.pageLead(title, optional(noImages), new Callback<RbPageLead>() {
             @Override

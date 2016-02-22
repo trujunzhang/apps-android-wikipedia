@@ -22,10 +22,15 @@ public class PageLoadTest extends BasePageLoadTest {
     public void testPageFetchWithAmpersand() throws Throwable {
 //        final int expectedNumberOfSections = 1;
         // TODO: verify num sections
+        // https://en.wikipedia.org/wiki/Main_Page
+        // https://en.wikipedia.org/api/rest_v1/page/mobile-sections-remaining/Djoewariah
         // https://en.wikipedia.org/api/rest_v1/page/mobile-sections-lead/Main_Page
         // https://test.wikipedia.org/api/rest_v1/page/mobile-sections-remaining/Ampersand_%26_title
         // http://localhost:8888/mediawiki/index.php/Prelude
         // http://localhost:8888/mediawiki/index.php/Prelude
+        // http://localhost:8888/mediawiki/api/rest_v1/page/mobile-sections-lead/Main_Page
+        // http://localhost:8888/mediawiki/api/rest_v1/page/mobile-sections-remaining/Prelude
+
         loadPageSync("Ampersand & title", TEST_SITE);
     }
 

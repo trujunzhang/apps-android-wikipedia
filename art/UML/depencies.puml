@@ -1,22 +1,20 @@
 @startuml
 
-actor Foo1
-actor Bob #red
-boundary Foo2
-control Foo3
-entity Foo4
-database Foo5
+title Simple communication example
 
-Foo1 -> Foo2: To boundary
-Foo1 -> Foo3: To Control
+component Fresco
 
+note right of [Fresco]
+  A note can also
+  be on several lines
+end note
 
+component sdwebimage
 
-actor Bob #red :text
-' comment
-
-
-
+note right of [sdwebimage]
+  A note can also
+  be on several lines
+end note
 
 
 @enduml
